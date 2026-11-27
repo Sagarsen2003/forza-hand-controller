@@ -17,9 +17,39 @@ from hud import draw_hud
 from tracker import HandTracker
 
 if sys.platform.startswith("win"):
+    import ctypes
     import msvcrt
 else:  # pragma: no cover - non-Windows fallback
+    ctypes = None
     msvcrt = None
+
+
+def _apply_window_icon(window_title: str, icon_path: Path) -> None:
+    """Best-effort Windows titlebar/taskbar icon setter for the OpenCV preview window."""
+    if ctypes is None or not icon_path.is_file():
+        return
+    try:
+        user32 = ctypes.windll.user32
+        hwnd = user32.FindWindowW(None, window_title)
+        if not hwnd:
+            return
+        IMAGE_ICON = 1
+        LR_LOADFROMFILE = 0x0010
+        LR_DEFAULTSIZE = 0x0040
+        WM_SETICON = 0x0080
+        hicon = user32.LoadImageW(
+            None,
+            str(icon_path),
+            IMAGE_ICON,
+            0,
+            0,
+            LR_LOADFROMFILE | LR_DEFAULTSIZE,
+        )
+        if hicon:
+            user32.SendMessageW(hwnd, WM_SETICON, 0, hicon)
+            user32.SendMessageW(hwnd, WM_SETICON, 1, hicon)
+    except Exception:
+        pass
 
 
 def load_config(config_path: Path) -> dict[str, Any]:
@@ -144,6 +174,7 @@ def main(argv: list[str] | None = None) -> int:
     if not args.headless:
         cv2.namedWindow(window_title, cv2.WINDOW_NORMAL)
         cv2.resizeWindow(window_title, tracker.frame_width, tracker.frame_height)
+        _apply_window_icon(window_title, base_dir / "assets" / "forza_logo.ico")
 
     tracker.start_async()
     print(

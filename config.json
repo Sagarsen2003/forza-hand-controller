@@ -95,7 +95,9 @@
     "tab_cooldown_sec": 0.35
   },
   "hud": {
-    "window_title": "FH4 Hand Controller",
-    "show_landmarks": true
+    "window_title": "Forza Hand Controller",
+    "show_landmarks": true,
+    "show_logo": true,
+    "logo_path": "assets/forza_logo.png"
   }
 }

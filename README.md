@@ -19,6 +19,7 @@ A modular, low-latency Python system that uses **OpenCV**, **MediaPipe**, and **
 ```text
 forza_hand_controller/
 ├── .venv/                  # Isolated Python virtual environment
+├── assets/                 # Forza HUD overlay logo & window icon
 ├── docs/
 │   └── images/             # Live HUD demo screenshots
 ├── models/

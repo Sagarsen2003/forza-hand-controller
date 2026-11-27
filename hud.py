@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+from functools import lru_cache
 import math
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -352,6 +354,74 @@ def _draw_button_strip(frame: np.ndarray, state: ControlState) -> None:
     cv2.putText(frame, "[Q] Quit", (w - 64, y_bot - 4), cv2.FONT_HERSHEY_SIMPLEX, 0.42, COLOR_MUTED, 1, cv2.LINE_AA)
 
 
+@lru_cache(maxsize=4)
+def _load_logo_rgba(resolved_path: str, max_w: int, max_h: int) -> tuple[np.ndarray, np.ndarray] | None:
+    """Load, resize, and pre-split BGR and float32 alpha mask for fast HUD compositing."""
+    path = Path(resolved_path)
+    if not path.is_file():
+        return None
+    img = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
+    if img is None or img.size == 0:
+        return None
+
+    h, w = img.shape[:2]
+    scale = min(float(max_w) / max(1, w), float(max_h) / max(1, h))
+    new_w = max(1, int(round(w * scale)))
+    new_h = max(1, int(round(h * scale)))
+    resized = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_AREA)
+
+    if resized.ndim == 2:
+        bgr = cv2.cvtColor(resized, cv2.COLOR_GRAY2BGR).astype(np.float32)
+        alpha = (resized.astype(np.float32) / 255.0)[..., None]
+    elif resized.shape[2] == 4:
+        bgr = resized[:, :, :3].astype(np.float32)
+        alpha = (resized[:, :, 3].astype(np.float32) / 255.0)[..., None]
+    else:
+        bgr = resized.astype(np.float32)
+        gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY).astype(np.float32)
+        alpha = np.clip((gray - 12.0) / 225.0, 0.0, 1.0)[..., None]
+    return bgr, alpha
+
+
+def _draw_forza_logo(frame: np.ndarray, config: dict) -> None:
+    """Draw a compact Forza emblem badge in the bottom-right corner above the button strip."""
+    hud_cfg = config.get("hud", {})
+    if not bool(hud_cfg.get("show_logo", True)):
+        return
+
+    raw_logo = Path(str(hud_cfg.get("logo_path", "assets/forza_logo.png")))
+    if not raw_logo.is_absolute():
+        raw_logo = Path(__file__).resolve().parent / raw_logo
+    loaded = _load_logo_rgba(str(raw_logo), max_w=78, max_h=48)
+    if loaded is None:
+        return
+
+    logo_bgr, logo_alpha = loaded
+    lh, lw = logo_bgr.shape[:2]
+    h, w = frame.shape[:2]
+
+    pad_x, pad_y = 8, 5
+    box_w = lw + 2 * pad_x
+    box_h = lh + 2 * pad_y
+    x2 = w - 10
+    y2 = h - 36
+    x1 = x2 - box_w
+    y1 = y2 - box_h
+    if x1 < 0 or y1 < 0:
+        return
+
+    roi = frame[y1:y2, x1:x2]
+    bg_tint = np.full_like(roi, COLOR_BG, dtype=np.uint8)
+    cv2.addWeighted(bg_tint, 0.78, roi, 0.22, 0.0, dst=roi)
+    cv2.rectangle(frame, (x1, y1), (x2, y2), COLOR_BORDER, 1)
+
+    lx1 = x1 + pad_x
+    ly1 = y1 + pad_y
+    target_roi = frame[ly1 : ly1 + lh, lx1 : lx1 + lw].astype(np.float32)
+    blended = logo_bgr * logo_alpha + target_roi * (1.0 - logo_alpha)
+    frame[ly1 : ly1 + lh, lx1 : lx1 + lw] = np.clip(blended, 0, 255).astype(np.uint8)
+
+
 def draw_hud(
     frame: np.ndarray,
     state: ControlState,
@@ -416,5 +486,6 @@ def draw_hud(
             cv2.LINE_AA,
         )
 
+    _draw_forza_logo(frame, config)
     _draw_button_strip(frame, state)
     return frame
