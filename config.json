@@ -1,0 +1,101 @@
+{
+  "active_game": "fh4",
+  "game_profiles": {
+    "fh4": {
+      "label": "FH4",
+      "camera_button": "BACK",
+      "steering_spring_hz": 4.8,
+      "trigger_spring_hz": 6.5
+    },
+    "fh5": {
+      "label": "FH5",
+      "camera_button": "RB",
+      "steering_spring_hz": 4.8,
+      "trigger_spring_hz": 6.5
+    },
+    "fh6": {
+      "label": "FH6",
+      "camera_button": "RB",
+      "steering_spring_hz": 4.8,
+      "trigger_spring_hz": 6.5
+    },
+    "motorsport": {
+      "label": "FM",
+      "camera_button": "RB",
+      "steering_spring_hz": 5.4,
+      "trigger_spring_hz": 7.0
+    }
+  },
+  "camera": {
+    "index": 0,
+    "frame_width": 640,
+    "frame_height": 480,
+    "target_fps": 60,
+    "mirror": true,
+    "swap_handedness": false
+  },
+  "tracker": {
+    "max_num_hands": 2,
+    "model_complexity": 0,
+    "min_detection_confidence": 0.55,
+    "min_presence_confidence": 0.55,
+    "min_tracking_confidence": 0.55,
+    "delegate": "auto",
+    "model_path": "models/hand_landmarker.task"
+  },
+  "smoothing": {
+    "enabled": true,
+    "landmark_min_cutoff": 1.4,
+    "landmark_beta": 7.5,
+    "landmark_d_cutoff": 1.0,
+    "landmark_reset_gap_sec": 0.25,
+    "control_loop_hz": 120,
+    "steering_spring_hz": 4.8,
+    "trigger_spring_hz": 6.5
+  },
+  "steering": {
+    "angle_max_deg": 45.0,
+    "center_deadzone_deg": 5.0,
+    "curve_exponent": 1.2,
+    "ema_alpha": 0.65,
+    "single_hand_grace_frames": 4
+  },
+  "triggers": {
+    "fist_open_ratio": 1.65,
+    "fist_closed_ratio": 1.2,
+    "trigger_deadzone": 0.06,
+    "curve_exponent": 0.85,
+    "ema_alpha": 0.8
+  },
+  "pinch_thresholds": {
+    "thumb_index": 0.35,
+    "thumb_middle": 0.35,
+    "release_hysteresis": 0.08
+  },
+  "gestures": {
+    "mode_toggle_hold_sec": 1.5,
+    "mode_toggle_grace_sec": 0.15,
+    "wrist_cross_palm_ratio": 1.15,
+    "shift_cooldown_sec": 0.3,
+    "camera_hold_sec": 0.8,
+    "camera_grace_sec": 0.12,
+    "rewind_spread_ratio": 0.37,
+    "rewind_thumb_spread_ratio": 0.78,
+    "rewind_release_grace_sec": 0.1,
+    "button_pulse_sec": 0.09,
+    "failsafe_grace_frames": 3
+  },
+  "menu": {
+    "box_center_x": 0.5,
+    "box_center_y": 0.5,
+    "box_half_width": 0.1,
+    "box_half_height": 0.12,
+    "box_hysteresis": 0.015,
+    "dpad_repeat_delay_sec": 0.32,
+    "tab_cooldown_sec": 0.35
+  },
+  "hud": {
+    "window_title": "FH4 Hand Controller",
+    "show_landmarks": true
+  }
+}

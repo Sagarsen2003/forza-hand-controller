@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+dist/
+build/
+
+# MediaPipe model binary (auto-downloaded on first launch)
+models/*.task
+models/*.part
+
+# Caches & IDE
+.pytest_cache/
+.vscode/
