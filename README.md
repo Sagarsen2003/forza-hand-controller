@@ -8,7 +8,7 @@ A modular, low-latency Python system that uses **OpenCV**, **MediaPipe**, and **
 
 *Rendered directly through the live `tracker.py` → `gestures.py` → `hud.py` pipeline (`640×480`, `60 FPS` tracking + `120 Hz` control interpolation).*
 
-| Driving: Throttle + Right Steer (`FH4`) | Driving: Brake + Left Steer (`FH6`) | Menu Navigation: D-Pad + `LB` Tab (`FH5`) |
+| Driving: Throttle + Right Steer (`FH4`) | Driving: Brake + Left Steer (`FH6`) | Menu Navigation: Back (`B`) + `LB` Tab (`FH5`) |
 | :---: | :---: | :---: |
 | ![Driving Throttle HUD Demo](docs/images/driving_throttle_demo.png) | ![Driving Brake HUD Demo](docs/images/driving_brake_demo.png) | ![Menu Mode HUD Demo](docs/images/menu_hud_demo.png) |
 
