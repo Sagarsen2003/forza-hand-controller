@@ -4,11 +4,23 @@ A modular, low-latency Python system that uses **OpenCV**, **MediaPipe**, and **
 
 ---
 
+## Live HUD Demos
+
+*Rendered directly through the live `tracker.py` → `gestures.py` → `hud.py` pipeline (`640×480`, `60 FPS` tracking + `120 Hz` control interpolation).*
+
+| Driving: Throttle + Right Steer (`FH4`) | Driving: Brake + Left Steer (`FH6`) | Menu Navigation: D-Pad + `LB` Tab (`FH5`) |
+| :---: | :---: | :---: |
+| ![Driving Throttle HUD Demo](docs/images/driving_throttle_demo.png) | ![Driving Brake HUD Demo](docs/images/driving_brake_demo.png) | ![Menu Mode HUD Demo](docs/images/menu_hud_demo.png) |
+
+---
+
 ## Project Structure
 
 ```text
 forza_hand_controller/
 ├── .venv/                  # Isolated Python virtual environment
+├── docs/
+│   └── images/             # Live HUD demo screenshots
 ├── models/
 │   └── hand_landmarker.task# Offline MediaPipe HandLandmarker model (auto-downloaded if absent)
 ├── config.json             # Tunable camera, steering curve, EMA, pinch & timing parameters
